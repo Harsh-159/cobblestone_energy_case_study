@@ -1,0 +1,54 @@
+======================================================================
+ Hyperparameter Search Report
+ Generated: 2026-03-20 14:49:17 UTC
+======================================================================
+
+MODEL: LIGHTGBM
+----------------------------------------
+  Best MAE: 41.49 EUR/MWh
+  Best Params: {'n_estimators': 500, 'learning_rate': 0.03, 'num_leaves': 31, 'min_child_samples': 50}
+  Combinations tested: 54
+
+  Top 5 configurations:
+    1. MAE=41.49  params={'n_estimators': 500, 'learning_rate': 0.03, 'num_leaves': 31, 'min_child_samples': 50}
+    2. MAE=41.49  params={'n_estimators': 1000, 'learning_rate': 0.03, 'num_leaves': 31, 'min_child_samples': 50}
+    3. MAE=41.82  params={'n_estimators': 500, 'learning_rate': 0.03, 'num_leaves': 127, 'min_child_samples': 50}
+    4. MAE=41.82  params={'n_estimators': 1000, 'learning_rate': 0.03, 'num_leaves': 127, 'min_child_samples': 50}
+    5. MAE=41.84  params={'n_estimators': 500, 'learning_rate': 0.1, 'num_leaves': 63, 'min_child_samples': 50}
+
+  Worst: MAE=47.77  params={'n_estimators': 1000, 'learning_rate': 0.1, 'num_leaves': 127, 'min_child_samples': 20}
+  Spread (worst - best): 6.29 EUR/MWh
+
+MODEL: XGBOOST
+----------------------------------------
+  Best MAE: 44.36 EUR/MWh
+  Best Params: {'n_estimators': 500, 'learning_rate': 0.03, 'max_depth': 9, 'min_child_weight': 50}
+  Combinations tested: 54
+
+  Top 5 configurations:
+    1. MAE=44.36  params={'n_estimators': 500, 'learning_rate': 0.03, 'max_depth': 9, 'min_child_weight': 50}
+    2. MAE=44.45  params={'n_estimators': 500, 'learning_rate': 0.03, 'max_depth': 9, 'min_child_weight': 20}
+    3. MAE=44.64  params={'n_estimators': 1000, 'learning_rate': 0.03, 'max_depth': 9, 'min_child_weight': 20}
+    4. MAE=44.81  params={'n_estimators': 1000, 'learning_rate': 0.03, 'max_depth': 9, 'min_child_weight': 50}
+    5. MAE=44.83  params={'n_estimators': 500, 'learning_rate': 0.03, 'max_depth': 5, 'min_child_weight': 50}
+
+  Worst: MAE=48.88  params={'n_estimators': 1000, 'learning_rate': 0.1, 'max_depth': 5, 'min_child_weight': 50}
+  Spread (worst - best): 4.52 EUR/MWh
+
+MODEL: RIDGE
+----------------------------------------
+  Best MAE: 35.17 EUR/MWh
+  Best Params: {'alpha': 0.1}
+  Combinations tested: 5
+
+  Top 5 configurations:
+    1. MAE=35.17  params={'alpha': 0.1}
+    2. MAE=35.17  params={'alpha': 1.0}
+    3. MAE=35.21  params={'alpha': 10.0}
+    4. MAE=35.38  params={'alpha': 50.0}
+    5. MAE=35.60  params={'alpha': 100.0}
+
+  Worst: MAE=35.60  params={'alpha': 100.0}
+  Spread (worst - best): 0.43 EUR/MWh
+
+======================================================================

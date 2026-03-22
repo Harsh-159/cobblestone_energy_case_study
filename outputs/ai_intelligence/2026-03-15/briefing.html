@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DE_LU Power Intelligence — 2026-03-15</title>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: monospace; max-width: 900px; margin: 40px auto;
+            background: #0f1117; color: #e2e8f0; padding: 20px; }
+    .briefing { background: #1a1f2e; padding: 24px; border-radius: 8px;
+                 line-height: 1.8; font-size: 15px; }
+    .section-label { color: #64b5f6; font-weight: bold; display: block;
+                      margin-top: 16px; }
+    .citation { background: #1e3a5f; color: #90caf9; border-radius: 4px;
+                padding: 1px 6px; cursor: pointer; font-size: 12px;
+                border: 1px solid #2563eb; white-space: nowrap; }
+    .citation:hover { background: #2563eb; }
+    .citation-popup { display: none; background: #1a2744; border: 1px solid #3b82f6;
+                      border-radius: 6px; padding: 12px; margin: 4px 0;
+                      font-size: 13px; }
+    .citation-popup.active { display: block; }
+    .evidence-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .evidence-table td { padding: 4px 8px; border: 1px solid #374151; }
+    .evidence-table tr:nth-child(even) { background: #1f2937; }
+    .status-clean { color: #34d399; }
+    .status-warn { color: #fbbf24; }
+    .validation-bar { background: #111827; padding: 12px; border-radius: 6px;
+                      margin-top: 20px; font-size: 13px; }
+    .signal-strong-buy { color: #34d399; font-weight: bold; }
+    .signal-buy { color: #6ee7b7; }
+    .signal-hold { color: #9ca3af; }
+    .signal-sell { color: #f87171; }
+    .signal-strong-sell { color: #ef4444; font-weight: bold; }
+    .signal-invalidated { color: #fbbf24; }
+    details summary { outline: none; }
+    details summary::-webkit-details-marker { color: #64b5f6; }
+  </style>
+</head>
+<body>
+  <h2 style="color:#64b5f6;">DE_LU Power Intelligence — 2026-03-15</h2>
+  <p style="color:#9ca3af; font-size:13px;">
+    Generated: 2026-03-22 21:18 UTC |
+    Model: models/gemini-2.5-flash-lite |
+    Citations: 21 total, 21 verified
+  </p>
+
+  <div class="briefing">
+    <span class="section-label">SIGNAL SUMMARY</span><br>
+The current signal indicates a neutral stance, suggesting a lack of strong conviction in either direction for the upcoming month. This implies that existing positions should be managed cautiously, with a focus on maintaining flexibility rather than initiating new aggressive trades. The M+1 base signal is NO_DATA <span class="citation" onclick="toggleCitation(0)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → signal_label_month_base = NO_DATA]</span><div class="citation-popup" id="popup-0"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> signal_label_month_base<br><strong>Cited value:</strong> NO_DATA<br><strong>Actual value:</strong> NO_DATA<br><strong>Status:</strong> ✓ VERIFIED</div> with a premium of N/A EUR/MWh over the curve proxy <span class="citation" onclick="toggleCitation(1)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → signal_month_base = None]</span><div class="citation-popup" id="popup-1"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> signal_month_base<br><strong>Cited value:</strong> None<br><strong>Actual value:</strong> None<br><strong>Status:</strong> ✓ VERIFIED</div>. Model confidence is N/A <span class="citation" onclick="toggleCitation(2)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → month_confidence = None]</span><div class="citation-popup" id="popup-2"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> month_confidence<br><strong>Cited value:</strong> None<br><strong>Actual value:</strong> None<br><strong>Status:</strong> ✓ VERIFIED</div>, giving a position size of 0.0 <span class="citation" onclick="toggleCitation(3)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → month_position_size = 0.0]</span><div class="citation-popup" id="popup-3"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> month_position_size<br><strong>Cited value:</strong> 0.0<br><strong>Actual value:</strong> 0.0<br><strong>Status:</strong> ✓ VERIFIED</div>.<br>
+<br>
+<span class="section-label">FUNDAMENTAL DRIVERS</span><br>
+Fundamental drivers are pointing towards a tighter supply situation. Residual load is trending higher than its recent average, suggesting increased demand. Meanwhile, wind generation is significantly below its average, contributing to upward pressure on prices. Residual load is 33597.0 MW <span class="citation" onclick="toggleCitation(4)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → avg_residual_load_mw = 33597.0]</span><div class="citation-popup" id="popup-4"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> avg_residual_load_mw<br><strong>Cited value:</strong> 33597.0<br><strong>Actual value:</strong> 33597.0<br><strong>Status:</strong> ✓ VERIFIED</div> vs 7-day average of 29650.0 MW <span class="citation" onclick="toggleCitation(5)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → mean_residual_load_7d = 29650.0]</span><div class="citation-popup" id="popup-5"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> trailing_7d<br><strong>Field:</strong> mean_residual_load_7d<br><strong>Cited value:</strong> 29650.0<br><strong>Actual value:</strong> 29650.0<br><strong>Status:</strong> ✓ VERIFIED</div>. Wind generation is 9738.0 MW <span class="citation" onclick="toggleCitation(6)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → avg_wind_mw = 9738.0]</span><div class="citation-popup" id="popup-6"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> avg_wind_mw<br><strong>Cited value:</strong> 9738.0<br><strong>Actual value:</strong> 9738.0<br><strong>Status:</strong> ✓ VERIFIED</div> vs 7-day average of 16527.0 MW <span class="citation" onclick="toggleCitation(7)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → mean_wind_mw_7d = 16527.0]</span><div class="citation-popup" id="popup-7"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> trailing_7d<br><strong>Field:</strong> mean_wind_mw_7d<br><strong>Cited value:</strong> 16527.0<br><strong>Actual value:</strong> 16527.0<br><strong>Status:</strong> ✓ VERIFIED</div>. Gas price is 50.12 EUR/MWh <span class="citation" onclick="toggleCitation(8)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → gas_price = 50.12]</span><div class="citation-popup" id="popup-8"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> gas_price<br><strong>Cited value:</strong> 50.12<br><strong>Actual value:</strong> 50.12<br><strong>Status:</strong> ✓ VERIFIED</div> vs 7-day average of 51.66 EUR/MWh <span class="citation" onclick="toggleCitation(9)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → mean_gas_price_7d = 51.66]</span><div class="citation-popup" id="popup-9"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> trailing_7d<br><strong>Field:</strong> mean_gas_price_7d<br><strong>Cited value:</strong> 51.66<br><strong>Actual value:</strong> 51.66<br><strong>Status:</strong> ✓ VERIFIED</div>. The market is in thermal regime <span class="citation" onclick="toggleCitation(10)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → is_thermal_regime = True]</span><div class="citation-popup" id="popup-10"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> is_thermal_regime<br><strong>Cited value:</strong> True<br><strong>Actual value:</strong> True<br><strong>Status:</strong> ✓ VERIFIED</div>.<br>
+<br>
+<span class="section-label">TOP MODEL FEATURES</span><br>
+The model is heavily influenced by residual load, highlighting its importance in the current market outlook. Past gas prices and the weekly price lag also play a significant role, indicating that historical price trends are a key determinant of future price movements. The top 3 features are residual_load_mw <span class="citation" onclick="toggleCitation(11)" style="border-color:#2563eb" title="✓ VERIFIED">[model_performance_report.txt → top_feature_rank1 = residual_load_mw]</span><div class="citation-popup" id="popup-11"><strong>Source:</strong> model_performance_report.txt<br><strong>Row:</strong> OOS_summary<br><strong>Field:</strong> top_feature_rank1<br><strong>Cited value:</strong> residual_load_mw<br><strong>Actual value:</strong> residual_load_mw<br><strong>Status:</strong> ✓ VERIFIED</div>, gas_price_lag_24h <span class="citation" onclick="toggleCitation(12)" style="border-color:#2563eb" title="✓ VERIFIED">[model_performance_report.txt → top_feature_rank2 = gas_price_lag_24h]</span><div class="citation-popup" id="popup-12"><strong>Source:</strong> model_performance_report.txt<br><strong>Row:</strong> OOS_summary<br><strong>Field:</strong> top_feature_rank2<br><strong>Cited value:</strong> gas_price_lag_24h<br><strong>Actual value:</strong> gas_price_lag_24h<br><strong>Status:</strong> ✓ VERIFIED</div>, and price_lag_168h <span class="citation" onclick="toggleCitation(13)" style="border-color:#2563eb" title="✓ VERIFIED">[model_performance_report.txt → top_feature_rank3 = price_lag_168h]</span><div class="citation-popup" id="popup-13"><strong>Source:</strong> model_performance_report.txt<br><strong>Row:</strong> OOS_summary<br><strong>Field:</strong> top_feature_rank3<br><strong>Cited value:</strong> price_lag_168h<br><strong>Actual value:</strong> price_lag_168h<br><strong>Status:</strong> ✓ VERIFIED</div>. Model OOS MAE is 13.6 EUR/MWh <span class="citation" onclick="toggleCitation(14)" style="border-color:#2563eb" title="✓ VERIFIED">[model_performance_report.txt → lightgbm_oos_mae = 13.6]</span><div class="citation-popup" id="popup-14"><strong>Source:</strong> model_performance_report.txt<br><strong>Row:</strong> OOS_summary<br><strong>Field:</strong> lightgbm_oos_mae<br><strong>Cited value:</strong> 13.6<br><strong>Actual value:</strong> 13.6<br><strong>Status:</strong> ✓ VERIFIED</div>.<br>
+<br>
+<span class="section-label">INTRADAY SHAPE</span><br>
+Intraday price action is expected to peak during the late afternoon hours, driven by demand ramps. Conversely, prices are anticipated to fall to their lowest point in the late evening, likely as residual demand subsides. Peak-base premium is 2.2 EUR/MWh <span class="citation" onclick="toggleCitation(15)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → peak_base_premium_pred = 2.2]</span><div class="citation-popup" id="popup-15"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> peak_base_premium_pred<br><strong>Cited value:</strong> 2.2<br><strong>Actual value:</strong> 2.2<br><strong>Status:</strong> ✓ VERIFIED</div>. Prices are lowest at hour 23 <span class="citation" onclick="toggleCitation(16)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → min_hour_pred = 23]</span><div class="citation-popup" id="popup-16"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> min_hour_pred<br><strong>Cited value:</strong> 23<br><strong>Actual value:</strong> 23<br><strong>Status:</strong> ✓ VERIFIED</div> and highest at hour 17 <span class="citation" onclick="toggleCitation(17)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → max_hour_pred = 17]</span><div class="citation-popup" id="popup-17"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> max_hour_pred<br><strong>Cited value:</strong> 17<br><strong>Actual value:</strong> 17<br><strong>Status:</strong> ✓ VERIFIED</div>. Intraday spread is 114.28 EUR/MWh <span class="citation" onclick="toggleCitation(18)" style="border-color:#2563eb" title="✓ VERIFIED">[delivery_periods.csv → intraday_spread_pred = 114.28]</span><div class="citation-popup" id="popup-18"><strong>Source:</strong> delivery_periods.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> intraday_spread_pred<br><strong>Cited value:</strong> 114.28<br><strong>Actual value:</strong> 114.28<br><strong>Status:</strong> ✓ VERIFIED</div>.<br>
+<br>
+<span class="section-label">INVALIDATION STATUS</span><br>
+The invalidation status is clean, meaning the forecast is not compromised by any unusual events or data anomalies. The desk can proceed with confidence in the model's output and make trading decisions accordingly. No invalidation flags are active <span class="citation" onclick="toggleCitation(19)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → any_invalidation = False]</span><div class="citation-popup" id="popup-19"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> any_invalidation<br><strong>Cited value:</strong> False<br><strong>Actual value:</strong> False<br><strong>Status:</strong> ✓ VERIFIED</div>. Signal is clean with position size 0.0 <span class="citation" onclick="toggleCitation(20)" style="border-color:#2563eb" title="✓ VERIFIED">[signal_table.csv → month_position_size = 0.0]</span><div class="citation-popup" id="popup-20"><strong>Source:</strong> signal_table.csv<br><strong>Row:</strong> 2026-03-15<br><strong>Field:</strong> month_position_size<br><strong>Cited value:</strong> 0.0<br><strong>Actual value:</strong> 0.0<br><strong>Status:</strong> ✓ VERIFIED</div>.
+  </div>
+
+  <div class="validation-bar">
+    <span class="status-clean">Citation Status: CLEAN — all citations verified</span>
+    — 21/21 claims verified against pipeline data
+  </div>
+
+  <h3 style="color:#64b5f6; margin-top:30px;">Evidence package</h3>
+  <p style="color:#9ca3af; font-size:13px;">
+    Full audit trail: outputs/ai_intelligence/2026-03-15/evidence_package.json
+  </p>
+  
+        <details style="margin-top:12px;">
+          <summary style="color:#64b5f6; cursor:pointer; font-size:14px;">
+            signal_table.csv → 2026-03-15
+          </summary>
+          <table class="evidence-table"><tr><td><strong>signal_label_month_base</strong></td><td>NO_DATA</td></tr>
+<tr><td><strong>signal_month_base</strong></td><td>None</td></tr>
+<tr><td><strong>fv_month_base</strong></td><td>None</td></tr>
+<tr><td><strong>curve_proxy_30d</strong></td><td>93.36</td></tr>
+<tr><td><strong>month_confidence</strong></td><td>None</td></tr>
+<tr><td><strong>month_position_size</strong></td><td>0.0</td></tr>
+<tr><td><strong>any_invalidation</strong></td><td>False</td></tr>
+<tr><td><strong>inv_gas_spike</strong></td><td>False</td></tr>
+<tr><td><strong>inv_wind_revision</strong></td><td>False</td></tr>
+<tr><td><strong>inv_residual_load_swing</strong></td><td>False</td></tr>
+<tr><td><strong>inv_negative_price_regime</strong></td><td>False</td></tr>
+<tr><td><strong>inv_high_error_regime</strong></td><td>False</td></tr>
+<tr><td><strong>signal_label_week_base</strong></td><td>NO_DATA</td></tr>
+<tr><td><strong>signal_week_base</strong></td><td>None</td></tr>
+<tr><td><strong>spark_spread_actual</strong></td><td>73.45</td></tr>
+<tr><td><strong>is_thermal_regime</strong></td><td>True</td></tr>
+<tr><td><strong>is_res_regime</strong></td><td>False</td></tr>
+<tr><td><strong>peak_base_premium_pred</strong></td><td>2.2</td></tr>
+<tr><td><strong>n_negative_hours_pred</strong></td><td>0</td></tr>
+</table>
+        </details>
+        
+        <details style="margin-top:12px;">
+          <summary style="color:#64b5f6; cursor:pointer; font-size:14px;">
+            delivery_periods.csv → 2026-03-15
+          </summary>
+          <table class="evidence-table"><tr><td><strong>base_pred</strong></td><td>111.74</td></tr>
+<tr><td><strong>peak_pred</strong></td><td>113.94</td></tr>
+<tr><td><strong>offpeak_pred</strong></td><td>109.54</td></tr>
+<tr><td><strong>base_actual</strong></td><td>96.0</td></tr>
+<tr><td><strong>avg_residual_load_mw</strong></td><td>33597.0</td></tr>
+<tr><td><strong>avg_wind_mw</strong></td><td>9738.0</td></tr>
+<tr><td><strong>avg_solar_mw</strong></td><td>5971.0</td></tr>
+<tr><td><strong>avg_res_penetration</strong></td><td>0.309</td></tr>
+<tr><td><strong>gas_price</strong></td><td>50.12</td></tr>
+<tr><td><strong>intraday_spread_pred</strong></td><td>114.28</td></tr>
+<tr><td><strong>min_hour_pred</strong></td><td>23</td></tr>
+<tr><td><strong>max_hour_pred</strong></td><td>17</td></tr>
+</table>
+        </details>
+        
+        <details style="margin-top:12px;">
+          <summary style="color:#64b5f6; cursor:pointer; font-size:14px;">
+            signal_table.csv + delivery_periods.csv → 
+          </summary>
+          <table class="evidence-table"><tr><td><strong>mean_base_actual_7d</strong></td><td>99.48</td></tr>
+<tr><td><strong>mean_gas_price_7d</strong></td><td>51.66</td></tr>
+<tr><td><strong>mean_wind_mw_7d</strong></td><td>16527.0</td></tr>
+<tr><td><strong>mean_residual_load_7d</strong></td><td>29650.0</td></tr>
+<tr><td><strong>signal_direction_history</strong></td><td>BUY, HOLD, STRONG_SELL, INVALIDATED, BUY, INVALIDATED, INVALIDATED</td></tr>
+<tr><td><strong>invalidation_count_7d</strong></td><td>3</td></tr>
+</table>
+        </details>
+        
+        <details style="margin-top:12px;">
+          <summary style="color:#64b5f6; cursor:pointer; font-size:14px;">
+            model_performance_report.txt → OOS_summary
+          </summary>
+          <table class="evidence-table"><tr><td><strong>lightgbm_oos_mae</strong></td><td>13.6</td></tr>
+<tr><td><strong>lightgbm_cv_mae_mean</strong></td><td>13.6</td></tr>
+<tr><td><strong>lightgbm_skill_score</strong></td><td>0.61</td></tr>
+<tr><td><strong>top_feature_rank1</strong></td><td>residual_load_mw</td></tr>
+<tr><td><strong>top_feature_rank2</strong></td><td>gas_price_lag_24h</td></tr>
+<tr><td><strong>top_feature_rank3</strong></td><td>price_lag_168h</td></tr>
+</table>
+        </details>
+        
+
+  <script>
+    function toggleCitation(id) {
+      var el = document.getElementById('popup-' + id);
+      el.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

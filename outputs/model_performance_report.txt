@@ -1,0 +1,80 @@
+======================================================================
+ DE_LU Power Price Forecasting — Performance Report
+ Generated: 2026-03-22 20:57:35 UTC
+ Model: LGBM+Ridge Ensemble (2-pass AR + recency + hourly-EW bias)
+ OOS Period: 2024-11-01 to 2026-03-15
+======================================================================
+
+MODEL CONFIGURATION
+----------------------------------------------------------------------
+  lgbm_weight:         0.9
+  n_estimators:        800
+  learning_rate:       0.01
+  num_leaves:          63
+  min_child_samples:   100
+  ridge_alpha:         0.1
+  AR features:         resid_lag_24h/48h/168h, rolling_mean_24h/168h
+  Recency weighting:   halflife=365 days
+  Asinh transform:     multi-scale c=[0.5, 1.0, 2.0]
+  Bias correction:     hourly-EW expanding (halflife=672h)
+
+OOS HOURLY RESULTS
+----------------------------------------------------------------------
+Model                                MAE      RMSE   Dir.Acc     Skill
+----------------------------------------------------------------------
+pass2_raw                           13.3      27.2     86.0%     +0.62
+pass2_hourly_ew                     13.6      27.0     86.7%     +0.61
+pass1_raw                           15.3      28.6     84.0%     +0.56
+seasonal_naive                      34.8      57.4       N/A     +0.00
+
+IMPROVEMENT BREAKDOWN
+----------------------------------------------------------------------
+  Pass-1 raw MAE:            15.29  MBE: +7.724
+  Pass-2 raw MAE:            13.27  MBE: +4.861
+  Pass-2 + hourly-EW MAE:    13.60  MBE: -0.502
+  AR + recency improvement:  2.02 EUR/MWh
+  Hourly-EW bias improvement:-0.33 EUR/MWh
+  Total improvement:         1.70 EUR/MWh
+
+MULTI-GRANULARITY FORECAST ACCURACY
+----------------------------------------------------------------------
+  (Hourly forecasts aggregated to weekly/monthly averages)
+
+  HOURLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble              13.60     27.01   1538.7%     -0.50  11999
+  pass1_raw                        15.29     28.62   1482.0%     +7.72  11999
+  pass2_raw                        13.27     27.18   1281.9%     +4.86  11999
+  hourly_ew                        13.60     27.01   1538.7%     -0.50  11999
+  naive                            34.84     57.43   5388.8%     -0.19  11999
+
+  WEEKLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble               5.79      8.17      6.3%     -0.49     72
+  pass1_raw                        10.62     13.68     11.7%     +7.68     72
+  pass2_raw                         7.67     10.87      7.9%     +4.83     72
+  hourly_ew                         5.79      8.17      6.3%     -0.49     72
+  naive                            18.93     26.82     22.1%     -0.27     72
+
+  MONTHLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble               4.00      4.78      4.3%     -0.74     17
+  pass1_raw                         9.90     11.32     10.8%     +7.39     17
+  pass2_raw                         6.94      8.48      7.3%     +4.67     17
+  hourly_ew                         4.00      4.78      4.3%     -0.74     17
+  naive                             5.67      7.07      6.0%     +0.11     17
+
+  Note: Weekly = ISO week avg, Monthly = calendar month avg
+        OOS period 2024-11-01 to 2026-03-15
+
+BEST MODEL: lgbm_ridge_hourly_ew (hour-specific EW expanding bias)
+  Hourly  MAE: 13.6 EUR/MWh
+  Weekly  MAE: 5.79 EUR/MWh  (MAPE: 6.3%)
+  Monthly MAE: 4.00 EUR/MWh  (MAPE: 4.3%)
+  Directional Accuracy: 86.7%
+  Skill vs Naive: +0.61
+
+======================================================================

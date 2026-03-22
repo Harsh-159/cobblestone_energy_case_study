@@ -1,0 +1,60 @@
+============================================================
+ DE_LU Power Dataset — Data Quality Report
+ Generated: 2026-03-20 23:03:28 UTC
+ Dataset: 2021-01-01 to 2026-03-15 UTC
+============================================================
+
+DATASET OVERVIEW
+  Total rows:     45,600 (expected: 35,064) ✗
+  Total columns:  5
+  Date range:     2021-01-01 00:00:00+00:00 → 2026-03-15 23:00:00+00:00
+
+AUTO-CORRECTIONS APPLIED
+  Total auto-corrections: 591
+      240 × Solar > 0 at night (2:00 UTC) but ≤ 50.0 MW
+      193 × Solar > 0 at night (3:00 UTC) but ≤ 50.0 MW
+      158 × Solar > 0 at night (4:00 UTC) but ≤ 50.0 MW
+  Full log: outputs/auto_corrections_log.csv
+
+TIMESTAMP CHECKS
+  Completeness:   PASS — Expected 45600 rows, got 45600. Missing: 0, Extra: 0.  ✓
+  Duplicates:     PASS — 0 duplicate timestamps  ✓
+  DST boundaries: FAIL — 12 transition dates verified  ✗
+
+MISSINGNESS
+  da_price_eur_mwh:                   4 missing (0.01%)  ✓
+  wind_forecast_mw:                   5 missing (0.01%)  ✓
+  solar_forecast_mw:                  8 missing (0.02%)  ✓
+  load_forecast_mw:                  55 missing (0.12%)  ✓
+  gas_price_eur_mwh:                  0 missing (0.00%)  ✓
+
+OUTLIERS & PHYSICAL BOUNDS
+  DA price (physical bounds):     0 flagged  ✓
+  DA price (4σ, crisis period):   396 flagged  ✓ [INFO — expected during Jun 2022–Mar 2023]
+  DA price (4σ, non-crisis):      42 flagged  ⚠ [WARNING — investigate]
+  Wind/solar bound violations:    1197 flagged  ✗ [ERROR]
+  Load out of bounds:             0 flagged  ✓
+  Gas price out of bounds:        0 flagged  ⚠ [WARNING]
+
+STALE DATA
+  ⚠ [WARNING]
+  da_price_eur_mwh: 8 identical values (0.0) starting 2024-03-24 07:00:00+00:00
+  da_price_eur_mwh: 7 identical values (0.0) starting 2024-04-07 00:00:00+00:00
+
+CROSS-SERIES CHECKS
+  Wind-price correlation: -0.339
+Gas completeness: 100.0%
+
+FLAGGED ROWS
+  Total flagged: 1621
+    ✗ ERROR: 1183
+    ⚠ WARNING: 42
+    ✓ INFO: 396
+  Saved to: outputs/qa_flagged_rows.csv
+
+OVERALL STATUS: FAIL
+  ✗ Errors:   2
+  ⚠ Warnings: 3
+  ✓ Info:     5
+  Auto-fixes: 591
+============================================================

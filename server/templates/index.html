@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DE_LU Power Intelligence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ───────────────────────────────────── */
+  .topbar {
+    background: #1a1f2e;
+    border-bottom: 1px solid #374151;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2563EB;
+    letter-spacing: 0.5px;
+  }
+  .topbar-settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .topbar-settings label {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .topbar-settings input[type="email"], .topbar-settings select {
+    background: #0f1117;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    color: #e2e8f0;
+    padding: 5px 10px;
+    font-size: 12px;
+    outline: none;
+  }
+  .topbar-settings input:focus, .topbar-settings select:focus {
+    border-color: #2563EB;
+  }
+  .topbar-settings input[type="email"] { width: 210px; }
+  .topbar-settings select { width: 130px; }
+
+  /* Custom time picker */
+  .time-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: #0f1117;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    padding: 3px 6px;
+  }
+  .time-picker:focus-within { border-color: #2563EB; }
+  .time-picker select {
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-size: 12px;
+    padding: 2px 0;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    text-align: center;
+  }
+  .time-picker .sep {
+    color: #6b7280;
+    font-size: 12px;
+    user-select: none;
+  }
+  .time-picker select option { background: #1a1f2e; }
+
+  .btn-sm {
+    padding: 5px 14px;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-sm:hover { opacity: 0.85; }
+  .btn-save { background: #374151; color: #e2e8f0; }
+  .btn-run  { background: #2563EB; color: white; }
+
+  /* ── Main ──────────────────────────────────────── */
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 16px;
+  }
+  .section-title {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+  .empty-msg {
+    color: #4b5563;
+    font-size: 13px;
+    padding: 32px 0;
+    text-align: center;
+  }
+
+  /* ── Report card ───────────────────────────────── */
+  .report-card {
+    background: #1a1f2e;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s;
+  }
+  .report-card:hover { border-color: #4b5563; }
+
+  .report-date { min-width: 90px; }
+  .report-date .day {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e2e8f0;
+  }
+  .report-date .weekday {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 1px;
+  }
+
+  .report-signal {
+    min-width: 100px;
+    text-align: center;
+  }
+  .signal-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .sig-strong-buy  { background: rgba(22,163,74,0.15); color: #16A34A; }
+  .sig-buy         { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .sig-hold        { background: rgba(107,114,128,0.15); color: #9ca3af; }
+  .sig-sell        { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .sig-strong-sell { background: rgba(220,38,38,0.15); color: #DC2626; }
+  .sig-invalidated { background: rgba(217,119,6,0.15); color: #D97706; }
+
+  .report-metrics {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+  }
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .metric .label {
+    font-size: 9px;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+  .metric .val {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+  .val-up { color: #16A34A; }
+  .val-down { color: #DC2626; }
+
+  .report-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .dl-btn:hover { opacity: 0.8; }
+  .dl-pdf  { background: #2563EB; color: white; }
+  .dl-xlsx { background: #374151; color: #e2e8f0; }
+
+  .inv-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-left: 6px;
+  }
+  .inv-clean { background: #16A34A; }
+  .inv-fired { background: #D97706; }
+
+  /* ── Toast ─────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-success { background: #16A34A; color: white; }
+  .toast-error   { background: #DC2626; color: white; }
+  .toast-info    { background: #2563EB; color: white; }
+
+  /* ── Running banner ────────────────────────────── */
+  .running-banner {
+    display: none;
+    background: rgba(37,99,235,0.08);
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #60a5fa;
+    align-items: center;
+    gap: 10px;
+  }
+  .running-banner.show { display: flex; }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid #2563EB;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .run-step {
+    font-weight: 600;
+    color: #93bbfc;
+  }
+  .run-dots {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 4px;
+  }
+  .run-dots span {
+    width: 4px; height: 4px;
+    background: #2563EB;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+  }
+  .run-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .run-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100% { opacity:0.3; } 40% { opacity:1; } }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <span class="topbar-brand">DE_LU POWER INTELLIGENCE</span>
+  <form id="configForm" class="topbar-settings" autocomplete="off">
+    <div>
+      <label>Email</label><br>
+      <input type="email" name="recipient_email" value="{{ config.recipient_email }}" placeholder="trader@example.com">
+    </div>
+    <div>
+      <label>Delivery</label><br>
+      <div class="time-picker">
+        <select id="tp_hour"></select>
+        <span class="sep">:</span>
+        <select id="tp_min"></select>
+        <select id="tp_ampm"></select>
+      </div>
+      <input type="hidden" name="delivery_time" id="delivery_time_hidden" value="{{ config.delivery_time }}">
+    </div>
+    <div>
+      <label>Timezone</label><br>
+      <select name="timezone">
+        {% set tz_options = ["Europe/Berlin", "Europe/London", "UTC", "America/New_York"] %}
+        {% for tz in tz_options %}
+          <option value="{{ tz }}" {% if config.timezone == tz %}selected{% endif %}>{{ tz }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="padding-top: 14px; display:flex; gap:6px;">
+      <button type="submit" class="btn-sm btn-save">Save</button>
+      <button type="button" class="btn-sm btn-run" onclick="runNow()">Run now</button>
+    </div>
+  </form>
+</div>
+
+<!-- Main content -->
+<div class="main">
+
+  <div class="running-banner" id="runBanner">
+    <div class="spinner"></div>
+    <span id="runLabel">Pipeline is running</span>
+    <span class="run-dots"><span></span><span></span><span></span></span>
+  </div>
+
+  <div class="section-title">Reports</div>
+  <div id="reportList">
+    <div class="empty-msg">No reports generated yet.</div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+/* ── Time picker ──────────────────────────────── */
+(function initTimePicker() {
+  const hSel = document.getElementById('tp_hour');
+  const mSel = document.getElementById('tp_min');
+  const apSel = document.getElementById('tp_ampm');
+  const hidden = document.getElementById('delivery_time_hidden');
+
+  // Populate options
+  for (let h = 1; h <= 12; h++) {
+    const o = document.createElement('option');
+    o.value = h;
+    o.textContent = h.toString().padStart(2, '0');
+    hSel.appendChild(o);
+  }
+  for (let m = 0; m < 60; m += 5) {
+    const o = document.createElement('option');
+    o.value = m;
+    o.textContent = m.toString().padStart(2, '0');
+    mSel.appendChild(o);
+  }
+  ['AM', 'PM'].forEach(v => {
+    const o = document.createElement('option');
+    o.value = v;
+    o.textContent = v;
+    apSel.appendChild(o);
+  });
+
+  // Parse initial 24h value (e.g. "07:30" or "19:30")
+  const initial = hidden.value || '06:30';
+  const [hh, mm] = initial.split(':').map(Number);
+  const isPM = hh >= 12;
+  const h12 = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
+  hSel.value = h12;
+  // Snap minutes to nearest 5
+  const snapped = Math.round(mm / 5) * 5;
+  mSel.value = snapped >= 60 ? 55 : snapped;
+  apSel.value = isPM ? 'PM' : 'AM';
+
+  function sync() {
+    let h = parseInt(hSel.value);
+    const m = parseInt(mSel.value);
+    const ap = apSel.value;
+    // Convert to 24h
+    if (ap === 'AM' && h === 12) h = 0;
+    else if (ap === 'PM' && h !== 12) h += 12;
+    hidden.value = h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0');
+  }
+
+  hSel.addEventListener('change', sync);
+  mSel.addEventListener('change', sync);
+  apSel.addEventListener('change', sync);
+})();
+
+/* ── Toast ────────────────────────────────────── */
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-' + (type || 'info') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ── Save config ──────────────────────────────── */
+document.getElementById('configForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    const res = await fetch('/save_config', { method: 'POST', body: new FormData(e.target) });
+    const data = await res.json();
+    showToast('Settings saved', 'success');
+  } catch (err) {
+    showToast('Failed to save', 'error');
+  }
+});
+
+/* ── Run now ──────────────────────────────────── */
+async function runNow() {
+  try {
+    const res = await fetch('/run_now', { method: 'POST' });
+    const data = await res.json();
+    showToast(data.message, data.status === 'ok' ? 'info' : 'error');
+    if (data.status === 'ok') {
+      // Start polling faster while running
+      refreshStatus();
+      clearInterval(statusInterval);
+      statusInterval = setInterval(refreshStatus, 3000);
+    }
+  } catch (err) {
+    showToast('Failed to trigger run', 'error');
+  }
+}
+
+/* ── Status + live step ───────────────────────── */
+let wasRunning = false;
+
+async function refreshStatus() {
+  try {
+    const res = await fetch('/status');
+    const data = await res.json();
+    const banner = document.getElementById('runBanner');
+    const label = document.getElementById('runLabel');
+
+    if (data.currently_running) {
+      banner.classList.add('show');
+      label.textContent = data.current_step || 'Pipeline is running';
+      wasRunning = true;
+    } else {
+      banner.classList.remove('show');
+      if (wasRunning) {
+        // Run just finished — reload reports, slow down polling
+        wasRunning = false;
+        refreshReports();
+        clearInterval(statusInterval);
+        statusInterval = setInterval(refreshStatus, 15000);
+        showToast('Pipeline complete — report ready', 'success');
+      }
+    }
+  } catch (err) {}
+}
+
+/* ── Reports ──────────────────────────────────── */
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function sigClass(label) {
+  const l = (label || '').toUpperCase();
+  if (l === 'STRONG_BUY')  return 'sig-strong-buy';
+  if (l === 'BUY')         return 'sig-buy';
+  if (l === 'SELL')        return 'sig-sell';
+  if (l === 'STRONG_SELL') return 'sig-strong-sell';
+  if (l.includes('INV'))   return 'sig-invalidated';
+  return 'sig-hold';
+}
+
+function premiumColor(val) {
+  if (val == null || val === 'N/A') return '';
+  return parseFloat(val) >= 0 ? 'val-up' : 'val-down';
+}
+
+async function refreshReports() {
+  try {
+    const res = await fetch('/reports');
+    const data = await res.json();
+    const el = document.getElementById('reportList');
+
+    if (!data.length) {
+      el.innerHTML = '<div class="empty-msg">No reports generated yet.</div>';
+      return;
+    }
+
+    el.innerHTML = data.map(r => {
+      const d = new Date(r.date + 'T00:00:00');
+      const wd = DAYS[d.getDay()];
+      const label = r.signal_label || 'N/A';
+      const premium = r.premium;
+      const premStr = (premium != null && premium !== 'N/A') ? (premium >= 0 ? '+' : '') + premium.toFixed(1) : '—';
+      const invDot = r.invalidated
+        ? '<span class="inv-dot inv-fired" title="Invalidation active"></span>'
+        : '<span class="inv-dot inv-clean" title="Clean"></span>';
+
+      const timeStr = r.generated_at ? r.generated_at : '';
+
+      return `
+        <div class="report-card">
+          <div class="report-date">
+            <div class="day">${r.date}</div>
+            <div class="weekday">${wd}${timeStr ? ' · ' + timeStr : ''}</div>
+          </div>
+          <div class="report-signal">
+            <span class="signal-badge ${sigClass(label)}">${label.replace('_', ' ')}</span>
+            ${invDot}
+          </div>
+          <div class="report-metrics">
+            <div class="metric">
+              <span class="label">Premium</span>
+              <span class="val ${premiumColor(premium)}">${premStr} €</span>
+            </div>
+            ${r.fair_value != null ? `<div class="metric">
+              <span class="label">Fair Value</span>
+              <span class="val">${r.fair_value.toFixed(1)} €</span>
+            </div>` : ''}
+            ${r.base_forecast != null ? `<div class="metric">
+              <span class="label">Base Fcst</span>
+              <span class="val">${r.base_forecast.toFixed(1)} €</span>
+            </div>` : ''}
+            ${r.confidence != null ? `<div class="metric">
+              <span class="label">Confidence</span>
+              <span class="val">${r.confidence.toFixed(2)}</span>
+            </div>` : ''}
+          </div>
+          <div class="report-actions">
+            ${r.pdf ? `<a class="dl-btn dl-pdf" href="/download/${r.date}/pdf">PDF</a>` : ''}
+            ${r.excel ? `<a class="dl-btn dl-xlsx" href="/download/${r.date}/excel">Excel</a>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('Reports refresh failed:', err);
+  }
+}
+
+/* ── Init ─────────────────────────────────────── */
+refreshStatus();
+refreshReports();
+let statusInterval = setInterval(refreshStatus, 15000);
+setInterval(refreshReports, 60000);
+</script>
+</body>
+</html>

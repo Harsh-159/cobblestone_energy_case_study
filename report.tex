@@ -1,0 +1,338 @@
+\documentclass[11pt,a4paper]{article}
+
+% ── Packages ─────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{eurosym}
+
+% ── Colours & style ──────────────────────────────────────────────────
+\definecolor{cblue}{HTML}{2563EB}
+\definecolor{cgray}{HTML}{6B7280}
+\hypersetup{colorlinks=true, linkcolor=cblue, urlcolor=cblue, citecolor=cblue}
+\titleformat{\section}{\Large\bfseries\color{cblue}}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.6em}{}
+
+% ── Tighter section spacing ──────────────────────────────────────────
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+\titlespacing*{\subsection}{0pt}{5pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{4pt}{2pt}
+
+\setlength{\parskip}{3pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!8},
+  frame=single,
+  rulecolor=\color{gray!30},
+  breaklines=true,
+  columns=fullflexible,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{cgray}{DE\_LU Day-Ahead Price Forecasting}}
+\fancyhead[R]{\small\textcolor{cgray}{Cobblestone Energy Case Study}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Title ────────────────────────────────────────────────────────────
+\title{%
+  \vspace{-1.5cm}
+  \textbf{German Day-Ahead Electricity Price Forecasting}\\[0.3em]
+  \large A Five-Component Pipeline for Forecasting, Signal Generation, and Automated Reporting\\[0.5em]
+  \normalsize Cobblestone Energy --- Technical Case Study
+}
+\author{Harsh Yadav \quad \small\texttt{harshyadavhappy@gmail.com}}
+
+\date{}
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+% ══════════════════════════════════════════════════════════════════════
+\vspace{-0.5cm}
+\begin{abstract}
+This report documents the design, implementation, and evaluation of a production-grade pipeline for forecasting German day-ahead (DE\_LU bidding zone) electricity prices. The system spans five components: (1)~data ingestion and quality assurance, (2)~a multi-model forecasting engine with walk-forward validation, (3)~prompt curve translation into tradable signals, (4)~AI-assisted market intelligence briefings, and (5)~automated daily PDF reporting. The best model an LGBM+Ridge ensemble with two-pass autoregressive residual correction and hourly exponentially-weighted bias adjustment achieves a 13.6~\euro MWh hourly MAE, 5.79~\euro MWh weekly MAE, and 86.7\% directional accuracy on a 17-month out-of-sample window (Nov~2024--Mar~2026).
+\end{abstract}
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+
+Day-ahead electricity prices in the European power market are shaped by a complex interplay of renewable generation forecasts, fuel costs, demand patterns, and cross-border flows. For trading desks, having accurate short-term price forecasts that translate cleanly into position recommendations is essential.
+
+This project builds an end-to-end system that ingests raw market data via public APIs, engineers a rich feature set, trains and evaluates multiple forecasting models under strict temporal separation, converts forecasts into tradable forward-curve signals, enriches them with AI-generated market commentary, and packages the result into a daily desk-ready PDF. Every component is designed for daily automated execution with no manual intervention required.
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Task 1: Data Ingestion and Quality Assurance}
+\label{sec:task1}
+
+\subsection{Data Sources and Collection}
+
+Five hourly time series are collected spanning January~2021 to the present, covering the DE\_LU (Germany--Luxembourg) bidding zone using the following two methods.
+
+\begin{enumerate}[noitemsep]
+\item \textbf{ENTSO-E API} Day-ahead price, wind generation forecase, SOlar generation forcase, Load Forcast
+  \item \textbf{Investing.com } TTF natural gas price (daily, forward-filled to hourly viamanual csv download)
+\end{enumerate}
+
+The ENTSO-E API returns XML that is parsed into hourly resolution. Gas prices, available only at daily granularity, are broadcast to all 24~hours of each day and forward-filled over weekends and holidays. Timezone handling uses \texttt{Europe/Berlin} with explicit UTC conversion, and DST transitions (spring-forward and fall-back) are handled by detecting 23-hour and 25-hour days and adjusting accordingly.
+
+\subsection{Quality Assurance Pipeline}
+
+The QA layer applies a structured set of automated checks and corrections, logged for full auditability.
+
+\subsubsection{Validation Checks}
+The QA module performs a battery of checks:
+\begin{itemize}[noitemsep]
+  \item \textbf{Timestamp completeness}: All 45{,}600 expected hourly rows present; 0 missing, 0 duplicates.
+  \item \textbf{Missingness}: DA price 4 missing (0.01\%), wind 5 (0.01\%), solar 8 (0.02\%), load 55 (0.12\%), gas 0. 
+  \item \textbf{Outlier detection}: 4$\sigma$ flagging with crisis-period awareness (Jun~2022--Mar~2023). 396 rows flagged as expected crisis-era extremes; 42 non-crisis outliers flagged for investigation.
+  \item \textbf{Physical-bound checks}: Wind/solar negativity, load bounds, gas price bounds.
+  \item \textbf{Stale-data detection}: Sequences of $\geq$7 identical consecutive values flagged (e.g., price = 0.0 during Easter 2024).
+  \item \textbf{Cross-series validation}: Wind--price correlation = $-0.339$ (physically plausible negative relationship).
+\end{itemize}
+
+Overall, 1{,}621 rows were flagged (1{,}183 errors, 42 warnings, 396 informational). All flagged rows and auto-correction logs are saved to CSV for manual review.
+
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Task 2: Forecasting Model}
+\label{sec:task2}
+
+\subsection{Feature Engineering}
+\label{sec:features}
+
+Starting from the five raw series, 60+ features are constructed in \texttt{src/features.py}:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Calendar}: Hour-of-day, day-of-week, month, ISO week (both raw and sine/cosine encoded), weekend/holiday.
+  \item \textbf{Lag features}: Price lags at 1h, 2h, 3h, 6h, 12h, 24h, 48h, and 168h. 
+  \item \textbf{Rolling statistics}: 24h and 168h rolling means, standard deviations, min, \& max for price, wind, solar, and load.
+  \item \textbf{Residual load}: $\text{load\_forecast} - \text{wind\_forecast} - \text{solar\_forecast}$, a key indicator of thermal generation need.
+  \item \textbf{Interactions}: Wind $\times$ solar, wind share of load, solar share of load, etc.
+  \item \textbf{Autoregressive residuals} (2nd-pass only): $\text{resid\_lag\_24h}$, $\text{resid\_lag\_168h}$, $\text{resid\_rolling\_mean\_24h}$, etc.
+\end{itemize}
+
+\subsection{Model Architecture}
+
+The best forecasting engine found is a \textbf{LGBM+Ridge ensemble} with a two-pass training procedure:
+
+\begin{enumerate}
+  \item \textbf{Pass 1 (base model)}: A LightGBM regressor with 800 trees, 63 leaves, learning rate 0.01, min 100 samples per leaf(found via extensive testing) is blended with a Ridge regression baseline (12 fundamental features, $\alpha = 0.1$). The ensemble weight is 90\% LGBM / 10\% Ridge. Training uses \textbf{recency weighting} with a 365-day exponential halflife to downweight the 2022 energy crisis period, which exhibited non-stationary dynamics unlikely to recur.
+
+  \item \textbf{Pass 2 (AR residual correction)}: Residuals from Pass~1 are lagged (24h, 48h, 168h) and their rolling means computed. A second LGBM+Ridge ensemble is trained on the augmented feature matrix. This captures persistent forecast biases e.g., if the model consistently under-predicts morning peak prices.
+\end{enumerate}
+
+A \textbf{multi-scale asinh transformation} ($c \in \{0.5, 1.0, 2.0\}$) is applied to the target variable during training. This stabilises variance across the price distribution and reduces the influence of extreme spikes. The three scale parameters produce different compression levels; predictions are averaged across scales.
+
+\subsection{Walk-Forward Cross-Validation}
+
+Models are evaluated via \textbf{12-fold walk-forward CV} with 30-day test windows, strict temporal ordering, and no future data leakage. Each fold trains on all data preceding its test window. The OOS test period is fixed at November~2024 through March~2026 (11{,}999 hours), entirely excluded from any training fold.
+
+% \subsection{Post-Processing: Hourly Exponentially-Weighted Bias Correction}
+
+% Even after two-pass AR correction, systematic hour-specific biases remain (e.g., midday solar depression, evening ramp-up). An \textbf{expanding-window, hour-stratified exponential-weighted mean bias correction} is applied:
+
+% \begin{equation}
+%   \hat{y}_{t}^{\text{corrected}} = \hat{y}_{t}^{\text{raw}} - \bar{b}_{h(t)}^{\text{EW}}
+% \end{equation}
+
+% where $\bar{b}_{h(t)}^{\text{EW}}$ is the exponentially-weighted mean residual for hour $h(t)$, computed over all preceding OOS predictions with a halflife of 672 hours ($\approx$4 weeks). This is strictly causal---each correction uses only past errors.
+
+\subsection{Results}
+
+
+\begin{table}[H]
+\centering
+\caption{Model comparison on OOS period (Nov 2024 -- Mar 2026, 11{,}999 hours).}
+\label{tab:model_comparison}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+& \multicolumn{3}{c}{\textbf{Hourly}} & \textbf{Weekly} & \textbf{Monthly} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-5} \cmidrule(lr){6-6}
+\textbf{Model} & MAE & RMSE & Dir.Acc & MAE & MAE \\
+\midrule
+Seasonal Naive (24h)       & 27.16 & 51.92 & --- & 10.62 & 5.29 \\
+Seasonal Naive (168h)      & 34.84 & 57.43 & ---    & 18.93 & 5.67 \\
+Ridge Regression           & 18.74 & 32.13 & 81.6\% &  8.35 & 5.09 \\
+LightGBM (standalone)      & 14.50 & 28.01 & 85.1\% &  6.72 & 4.42 \\
+\textbf{LGBM+Ridge+AR+EW} & \textbf{13.60} & \textbf{27.01} & \textbf{86.7\%} & \textbf{5.79} & \textbf{4.00} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The full ensemble mae is about half the seasonal naive (24h) baseline on hourly MAE. The two-pass AR correction alone contributes $\approx$2~\euro/MWh MAE reduction; Additionally a hourly-Exponentially Weighted bias correction trades a marginal hourly MAE increase (+0.33) for substantially better calibration (MBE drops from +4.86 to $-0.50$~\euro/MWh).
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{fig_forecast_vs_actual.png}
+    \caption{Forecast vs.\ actual prices over the OOS period. The ensemble tracks both level and shape of the price curve, with largest errors during sudden gas-driven spikes.}
+    \label{fig:forecast_vs_actual}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{fig_feature_importance.png}
+    \caption{Top feature importances (LightGBM gain). Lagged prices (24h, 168h) and residual load dominate, consistent with the mean-reverting, supply-driven nature of DA prices.}
+    \label{fig:feature_importance}
+  \end{subfigure}
+\end{figure}
+
+
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Task 3: Prompt Curve Translation}
+\label{sec:task3}
+
+\subsection{Objective}
+The curve translation module converts hourly DA price forecasts into actionable trading signals for European power forward contracts, with position sizing driven by model confidence and subject to invalidation logic.
+
+\subsection{Fair-Value Construction}
+For each delivery period, a \textbf{fair-value estimate} is computed by averaging hourly forecasts over the relevant future hours (base or peak), then compared against a \textbf{rolling DA curve proxy} the trailing 7/30/90-day average of realised DA prices.
+  \text{Premium}\_{d,p} = y\^{\text{forecast}}\_{d,p} -y\^{\text{proxy}}\_{d,p}
+where $d$ is the delivery period and $p \in \{\text{base}, \text{peak}\}$.
+
+\subsection{Signal Classification \& Confidence-Weighted Sizing}
+
+\noindent
+\begin{minipage}[t]{0.35\textwidth}
+Premiums are classified into five tiers:
+\vspace{2pt}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Signal} & \textbf{Premium (\euro/MWh)}  \\
+\midrule
+STRONG\_BUY  & $> +8.0$           \\
+BUY          & $+3.0$ to $+8.0$        \\
+HOLD         & $-3.0$ to $+3.0$         \\
+SELL         & $-8.0$ to $-3.0$     \\
+STRONG\_SELL & $< -8.0$         \\
+\bottomrule
+\end{tabular}
+\caption{Band avoids overtrading.}
+\end{table}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.65\textwidth}
+Confidence is derived from walk-forward CV error dist. and recent accuracy:
+\vspace{4pt}
+\begin{itemize}[noitemsep, leftmargin=*]
+  \item \textbf{$\geq 75\%$}: Full position size ; \textbf{50--75\%}: Half position size.
+  \item \textbf{$< 50\%$}: No position taken.
+\end{itemize}
+\vspace{6pt}
+Five flags invalidate signals when conditions fall outside the reliable regime:
+\begin{enumerate}[noitemsep, leftmargin=*]
+  \item TTF single-day move $>5$~\euro/MWh or $>10\%$.
+  \item Wind revision $>15$~GW and $|z|>2\sigma$.
+  \item Residual load swing $>15$~GW and $|z|>2\sigma$.
+  \item DA price $<-20$~\euro/MWh.
+  \item Rolling MAE $>1.5\times$ CV benchmark.
+\end{enumerate}
+\end{minipage}
+
+\vspace{4pt}
+% \noindent The wind/residual-load thresholds are raised to the 90th percentile of day-on-day changes (vs.\ the spec's 3--5~GW) because our dataset contains only the D-1 forecast, making cross-day deltas naturally larger. The additional $z$-score gate ensures seasonal self-calibration. When any flag fires, the signal is marked \texttt{INVALIDATED} until the condition clears.
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Task 4: AI-Powered Market Intelligence}
+\label{sec:task4}
+
+\subsection{Objective}
+
+The AI intelligence module generates natural-language market briefings that contextualise the quantitative forecast. Each briefing explains \emph{why} prices are expected to move in a particular direction, grounded in actual data.
+
+\subsection{RAG Architecture}
+
+The system uses a \textbf{Retrieval-Augmented Generation (RAG)} pattern:
+
+\begin{enumerate}
+  \item \textbf{Evidence assembly}: For the target date, the module collects quantitative facts, wind/solar/load forecasts, recent  trends, model prediction, signal direction, active invalidation flags, etc: formatted as structured ``evidence cards.''
+
+  \item \textbf{Prompt construction}: The evidence cards are injected into a carefully structured prompt along with the signal table and a set of constraints: the model must cite specific numbers from the evidence(like [delivery\_periods.csv → 2026-03-14]), no fabrication, framing analysis in terms a power trading desk would find useful, etc.
+
+  \item \textbf{Generation}: Google Gemini (\texttt{gemini-2.0-flash}) generates the briefing. The choice of Gemini over other LLMs was driven by API availability, cost, and the need for fast inference in a daily pipeline.
+
+  \item \textbf{Citation validation}: A post-generation validation step checks that every numerical claim in the briefing can be traced back to the evidence cards. The system uses regex pattern matching to extract cited figures and verify them against the source data. Zero tolerance policy ensures the desk never receives hallucinated market data.
+\end{enumerate}
+
+\subsection{Output Format}
+
+Each briefing contains, a 2-3 sentence executive summary of the price outlook; Supply-side analysis (wind, solar, residual load); Demand-side context (load forecast, temperature if available); Gas market commentary (TTF level, recent trend); Signal rationale tying the quantitative signal to the narrative.
+
+
+
+
+% ══════════════════════════════════════════════════════════════════════
+\section{Additional Features/Methods}
+\label{sec:task5}
+
+\subsection{Pipeline Orchestration}
+
+A single entry point (\texttt{scripts/run\_daily\_pipeline.py}) executes all five tasks in sequence on a daily basis. This creates an automated workflow where user can enter email and timing, then the completed report in a pdf format with adjoining data gets messaged to the user without any extra effort. The pdf contains Date, signal direcition, premium, confidernce socre, AI breifing and a lot more. Note that currently this is implmented as a POC because it needs latest data on runtime to become a MVP.
+
+\subsection{AutoGluon Benchmark}
+
+As an independent benchmark, we trained an AutoGluon Tabular predictor on the same 60+ feature and the same postprocessing. Results are generated via a standalone script:
+
+\centerline{\texttt{.venv/bin/python scripts/run\_autogluon\_tabular.py}}
+
+This script trains from scratch, applies post-processing, and prints all metrics directly. It acheves hourly MAE of 14.46 and directional accuracy of 85.2\%.The reason it performs worse than ours is my personal system limitation, on a more powerful machine it should achieve a 90+ directional accuracy.
+
+% \subsection{Skill Score Analysis}
+
+% Skill scores are computed relative to the Seasonal Naive (168h) baseline, which predicts each hour's price as last week's same-hour value. The metric is:
+
+% \begin{equation}
+%   \text{Skill} = 1 - \frac{\text{MAE}_{\text{model}}}{\text{MAE}_{\text{naive}}}
+% \end{equation}
+
+% The best model achieves a skill of $+0.61$, meaning it captures 61\% of the error that the naive baseline leaves on the table. Ridge regression alone achieves $+0.46$, and standalone LightGBM reaches $+0.58$, confirming that the ensemble, AR correction, and bias adjustment each contribute incrementally.
+
+% % ══════════════════════════════════════════════════════════════════════
+% \section{Discussion and Design Decisions}
+% \label{sec:discussion}
+
+% Several design choices merit explicit discussion:
+
+% \textbf{Why recency weighting?} The 2022 European energy crisis produced prices 5--10$\times$ higher than normal. Including this data without downweighting would bias the model toward expecting extreme prices under ordinary conditions. An exponential halflife of 365~days means 2022 data carries roughly 5--10\% of the weight of 2025 data, enough to inform tail-risk estimation without dominating the loss function.
+
+% \textbf{Why two-pass AR, not a single model?} Electricity price residuals exhibit strong autocorrelation---if the model under-predicts the morning peak today, it likely will tomorrow too. The first pass captures the fundamental relationship between features and prices; the second pass targets this serial correlation in errors. Empirically, this reduces MAE by $\approx$2~\euro/MWh.
+
+% \textbf{Why hourly-EW bias correction on top?} Different hours of the day have structurally different bias profiles (e.g., solar midday depression vs.\ evening ramp). The hourly-stratified correction with a 672-hour halflife ($\approx$4~weeks) adapts to slow regime changes (seasonal shifts in solar production) without overfitting to recent noise. It trades a marginal hourly MAE increase (+0.33) for dramatically better mean bias ($+4.86 \to -0.50$~\euro/MWh), which is critical for unbiased signal generation.
+
+% \textbf{Why adaptive invalidation thresholds?} Fixed absolute thresholds for weather revisions fail across seasons---a 5~GW wind change is routine in winter but extreme in summer. The dual-threshold approach (absolute AND z-score) self-calibrates, firing only when a change is extreme relative to its own recent distribution.
+
+% \textbf{Why RAG with citation validation?} LLM-generated market commentary is useful only if it does not hallucinate. The citation validation step ensures every number in the briefing can be traced to the source data, maintaining desk trust in the automated system.
+
+% % ══════════════════════════════════════════════════════════════════════
+% \section{Conclusion}
+
+% This project delivers a complete, production-ready pipeline for German day-ahead electricity price forecasting. The LGBM+Ridge ensemble with two-pass AR correction and hourly bias adjustment achieves strong performance across all evaluation granularities (13.6~\euro/MWh hourly, 5.79 weekly, 4.00 monthly MAE) with 86.7\% directional accuracy. The curve translation layer converts these forecasts into desk-actionable signals with appropriate risk guardrails, and the automated reporting system packages everything into a daily deliverable requiring no manual intervention. All components are fully reproducible from publicly available data sources.
+
+\end{document}

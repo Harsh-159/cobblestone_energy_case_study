@@ -1,0 +1,21 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.claude/
+=2.0.0
+
+# Large model artefacts (AutoGluon models are 6GB+)
+models/autogluon/
+models/ag_5min/
+models/ag_tabular_eval/
+AutogluonModels/
+outputs/ag_ts_model/
+
+# Runtime config (contains user-specific settings)
+server_config.json

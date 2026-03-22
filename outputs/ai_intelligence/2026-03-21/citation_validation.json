@@ -1,0 +1,197 @@
+{
+  "total_citations": 21,
+  "verified_citations": 21,
+  "unverified_citations": 0,
+  "hallucination_detected": false,
+  "details": [
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "signal_label_month_base",
+      "cited_value": "NO_DATA",
+      "actual_value": "NO_DATA",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "signal_month_base",
+      "cited_value": "None",
+      "actual_value": "None",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "month_confidence",
+      "cited_value": "None",
+      "actual_value": "None",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "month_position_size",
+      "cited_value": "0.0",
+      "actual_value": "0.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "avg_residual_load_mw",
+      "cited_value": "13199.0",
+      "actual_value": "13199.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "trailing_7d",
+      "column": "mean_residual_load_7d",
+      "cited_value": "19619.0",
+      "actual_value": "19619.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "avg_wind_mw",
+      "cited_value": "33068.0",
+      "actual_value": "33068.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "trailing_7d",
+      "column": "mean_wind_mw_7d",
+      "cited_value": "26129.0",
+      "actual_value": "26129.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "gas_price",
+      "cited_value": "50.12",
+      "actual_value": "50.12",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "trailing_7d",
+      "column": "mean_gas_price_7d",
+      "cited_value": "50.12",
+      "actual_value": "50.12",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "is_thermal_regime",
+      "cited_value": "True",
+      "actual_value": "True",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "model_performance_report.txt",
+      "row_id": "OOS_summary",
+      "column": "top_feature_rank1",
+      "cited_value": "residual_load_mw",
+      "actual_value": "residual_load_mw",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "model_performance_report.txt",
+      "row_id": "OOS_summary",
+      "column": "top_feature_rank2",
+      "cited_value": "gas_price_lag_24h",
+      "actual_value": "gas_price_lag_24h",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "model_performance_report.txt",
+      "row_id": "OOS_summary",
+      "column": "top_feature_rank3",
+      "cited_value": "price_lag_168h",
+      "actual_value": "price_lag_168h",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "model_performance_report.txt",
+      "row_id": "OOS_summary",
+      "column": "lightgbm_oos_mae",
+      "cited_value": "13.6",
+      "actual_value": "13.6",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "peak_base_premium_pred",
+      "cited_value": "0.8",
+      "actual_value": "0.8",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "min_hour_pred",
+      "cited_value": "2",
+      "actual_value": "2",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "max_hour_pred",
+      "cited_value": "18",
+      "actual_value": "18",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "delivery_periods.csv",
+      "row_id": "2026-03-21",
+      "column": "intraday_spread_pred",
+      "cited_value": "10.14",
+      "actual_value": "10.14",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "any_invalidation",
+      "cited_value": "False",
+      "actual_value": "False",
+      "verified": true,
+      "verdict": "VERIFIED"
+    },
+    {
+      "filename": "signal_table.csv",
+      "row_id": "2026-03-21",
+      "column": "month_position_size",
+      "cited_value": "0.0",
+      "actual_value": "0.0",
+      "verified": true,
+      "verdict": "VERIFIED"
+    }
+  ]
+}

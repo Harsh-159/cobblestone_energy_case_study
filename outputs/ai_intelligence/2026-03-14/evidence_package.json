@@ -1,0 +1,103 @@
+{
+  "target_date": "2026-03-14",
+  "generated_at": "2026-03-22T21:32:43.658761",
+  "signal": {
+    "source_file": "signal_table.csv",
+    "row_id": "2026-03-14",
+    "fields": {
+      "signal_label_month_base": "INVALIDATED",
+      "signal_month_base": 18.0,
+      "fv_month_base": 111.74,
+      "curve_proxy_30d": 93.74,
+      "month_confidence": 0.646,
+      "month_position_size": 0.0,
+      "any_invalidation": true,
+      "inv_gas_spike": false,
+      "inv_wind_revision": true,
+      "inv_residual_load_swing": false,
+      "inv_negative_price_regime": false,
+      "inv_high_error_regime": false,
+      "signal_label_week_base": "INVALIDATED",
+      "signal_week_base": 12.26,
+      "spark_spread_actual": 99.19,
+      "is_thermal_regime": true,
+      "is_res_regime": false,
+      "peak_base_premium_pred": 0.88,
+      "n_negative_hours_pred": 0
+    }
+  },
+  "delivery": {
+    "source_file": "delivery_periods.csv",
+    "row_id": "2026-03-14",
+    "fields": {
+      "base_pred": 125.91,
+      "peak_pred": 126.79,
+      "offpeak_pred": 125.02,
+      "base_actual": 121.74,
+      "avg_residual_load_mw": 37741.0,
+      "avg_wind_mw": 7826.0,
+      "avg_solar_mw": 4211.0,
+      "avg_res_penetration": 0.24,
+      "gas_price": 50.12,
+      "intraday_spread_pred": 88.78,
+      "min_hour_pred": 12,
+      "max_hour_pred": 17
+    }
+  },
+  "recent_context": {
+    "source_file": "signal_table.csv + delivery_periods.csv",
+    "row_ids": [
+      "2026-03-07",
+      "2026-03-08",
+      "2026-03-09",
+      "2026-03-10",
+      "2026-03-11",
+      "2026-03-12",
+      "2026-03-13"
+    ],
+    "fields": {
+      "mean_base_actual_7d": 97.83,
+      "mean_gas_price_7d": 52.12,
+      "mean_wind_mw_7d": 15742.0,
+      "mean_residual_load_7d": 29488.0,
+      "signal_direction_history": [
+        "BUY",
+        "BUY",
+        "HOLD",
+        "STRONG_SELL",
+        "INVALIDATED",
+        "BUY",
+        "INVALIDATED"
+      ],
+      "invalidation_count_7d": 2
+    }
+  },
+  "model_performance": {
+    "source_file": "model_performance_report.txt",
+    "row_id": "OOS_summary",
+    "fields": {
+      "lightgbm_oos_mae": 13.6,
+      "lightgbm_cv_mae_mean": 13.6,
+      "lightgbm_skill_score": 0.61,
+      "top_feature_rank1": "residual_load_mw",
+      "top_feature_rank2": "gas_price_lag_24h",
+      "top_feature_rank3": "price_lag_168h"
+    }
+  },
+  "anomaly_context": {
+    "source_file": "de_power_dataset.parquet",
+    "row_ids": "2026-03-13 to 2026-03-14",
+    "fields": {
+      "gas_price_yesterday": 50.87,
+      "gas_price_today": 50.12,
+      "gas_1d_change": -0.75,
+      "gas_1d_change_pct": -0.0148,
+      "wind_yesterday_avg_mw": 32173.0,
+      "wind_today_avg_mw": 7826.0,
+      "wind_revision_mw": -24347.0,
+      "da_price_max_yesterday": 165.75,
+      "da_price_min_yesterday": -9.0,
+      "negative_price_hours_yesterday": 5
+    }
+  }
+}

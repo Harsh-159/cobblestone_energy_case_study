@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DE_LU Power Intelligence — {{ target_date }}</title>
+<style>
+  @page {
+    size: A4;
+    margin: 0;
+    background: #0f1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: #0f1117;
+    color: #e2e8f0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  .page {
+    width: 100%;
+    height: 297mm;
+    padding: 18mm 20mm;
+    background: #0f1117;
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ── Header ────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #2563EB;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+  }
+  .header-left h1 {
+    font-size: 14px;
+    color: #2563EB;
+    letter-spacing: 0.5px;
+    font-weight: 800;
+  }
+  .header-left .date {
+    font-size: 10px;
+    color: #9ca3af;
+    margin-top: 1px;
+  }
+  .header-right {
+    text-align: right;
+    font-size: 8px;
+    color: #6b7280;
+  }
+
+  /* ── Signal hero ───────────────────────────── */
+  .signal-hero {
+    text-align: center;
+    padding: 10px 0 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #1f2937;
+  }
+  .signal-badge {
+    display: inline-block;
+    padding: 5px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .sig-strong-buy  { background: #16A34A; color: white; }
+  .sig-buy         { background: #22c55e; color: white; }
+  .sig-hold        { background: #4b5563; color: white; }
+  .sig-sell        { background: #ef4444; color: white; }
+  .sig-strong-sell { background: #DC2626; color: white; }
+  .sig-invalidated { background: #D97706; color: white; }
+
+  .signal-sub {
+    margin-top: 5px;
+    font-size: 9px;
+    color: #9ca3af;
+  }
+  .signal-sub strong {
+    color: #e2e8f0;
+    font-size: 10px;
+  }
+  .prior-note {
+    font-size: 7.5px;
+    color: #D97706;
+    margin-top: 3px;
+  }
+
+  /* ── Grid layout ───────────────────────────── */
+  .grid-2 {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .grid-2 > div { flex: 1; }
+  .grid-3 {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .grid-3 > div { flex: 1; }
+
+  /* ── Card ───────────────────────────────────── */
+  .card {
+    background: #151923;
+    border: 1px solid #1f2937;
+    border-radius: 5px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-size: 7.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  /* ── Key-value rows ────────────────────────── */
+  .kv-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2.5px 0;
+    border-bottom: 1px solid #1a1f2e;
+  }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-label {
+    color: #9ca3af;
+    font-size: 8.5px;
+  }
+  .kv-value {
+    font-weight: 700;
+    font-size: 8.5px;
+    color: #e2e8f0;
+    text-align: right;
+  }
+  .kv-trail {
+    font-size: 7px;
+    color: #6b7280;
+    font-weight: 400;
+  }
+  .v-up { color: #16A34A; }
+  .v-down { color: #DC2626; }
+  .v-warn { color: #D97706; }
+  .v-muted { color: #6b7280; }
+
+  /* ── Regime tag ─────────────────────────────── */
+  .regime-tag {
+    display: inline-block;
+    font-size: 7.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .regime-thermal { background: rgba(217,119,6,0.15); color: #fbbf24; border: 1px solid rgba(217,119,6,0.3); }
+  .regime-res     { background: rgba(22,163,74,0.12); color: #4ade80; border: 1px solid rgba(22,163,74,0.25); }
+
+  /* ── Invalidation ──────────────────────────── */
+  .inv-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 8px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .inv-clean-bar {
+    background: rgba(22,163,74,0.08);
+    border: 1px solid rgba(22,163,74,0.25);
+    color: #16A34A;
+  }
+  .inv-warn-bar {
+    background: rgba(217,119,6,0.08);
+    border: 1px solid rgba(217,119,6,0.25);
+    color: #D97706;
+  }
+  .inv-flags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .inv-chip {
+    font-size: 7px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .chip-ok   { background: rgba(22,163,74,0.1); color: #4ade80; }
+  .chip-bad  { background: rgba(220,38,38,0.12); color: #f87171; }
+
+  /* ── AI section ────────────────────────────── */
+  .ai-card {
+    background: #151923;
+    border: 1px solid #1f2937;
+    border-left: 3px solid #7C3AED;
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-bottom: 5px;
+  }
+  .ai-label {
+    font-size: 7px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #7C3AED;
+    margin-bottom: 2px;
+  }
+  .ai-text {
+    font-size: 7.5px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+
+  /* ── Model credibility ─────────────────────── */
+  .cred-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .cred-box {
+    flex: 1;
+    text-align: center;
+    background: #151923;
+    border: 1px solid #1f2937;
+    border-radius: 4px;
+    padding: 6px 4px;
+  }
+  .cred-val {
+    font-size: 12px;
+    font-weight: 800;
+    color: #e2e8f0;
+  }
+  .cred-lbl {
+    font-size: 7px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  /* ── Figure pages ──────────────────────────── */
+  .fig-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .fig-page img {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  .fig-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2563EB;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .fig-caption {
+    font-size: 8px;
+    color: #6b7280;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* ── Footer ────────────────────────────────── */
+  .page-footer {
+    position: absolute;
+    bottom: 8mm;
+    left: 20mm;
+    right: 20mm;
+    text-align: center;
+    font-size: 7px;
+    color: #4b5563;
+    border-top: 1px solid #1f2937;
+    padding-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 1 — EXECUTIVE SUMMARY
+     ═══════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>DE_LU POWER INTELLIGENCE</h1>
+      <div class="date">{{ target_date }}</div>
+    </div>
+    <div class="header-right">
+      Pre-Trade Briefing<br>
+      Generated {{ generated_time }}
+    </div>
+  </div>
+
+  <!-- Signal hero -->
+  <div class="signal-hero">
+    <div class="signal-badge {{ sig_class }}">{{ sig_label_display }}</div>
+    <div class="signal-sub">
+      M+1 Base Forward
+      {% if signal_month_base %}&nbsp;|&nbsp; Premium: <strong>{{ signal_month_base }} €/MWh</strong>{% endif %}
+      {% if month_confidence %}&nbsp;|&nbsp; Confidence: <strong>{{ month_confidence }}</strong>{% endif %}
+      {% if month_position_size and month_position_size != '0.0' %}&nbsp;|&nbsp; Position: <strong>{{ month_position_size }}×</strong>{% endif %}
+    </div>
+    {% if is_prior_signal %}
+    <div class="prior-note">⚠ Based on prior signal from {{ prior_sig_date }} — no forward data for target date</div>
+    {% endif %}
+  </div>
+
+  <!-- Row 1: Trade Thesis + Tomorrow's Price -->
+  <div class="grid-2">
+
+    <!-- Trade Thesis -->
+    <div class="card">
+      <div class="card-title">Trade Thesis</div>
+      {% if fv_month_base %}
+      <div class="kv-row">
+        <span class="kv-label">Fair Value (M+1)</span>
+        <span class="kv-value">{{ fv_month_base }} €</span>
+      </div>
+      {% endif %}
+      {% if curve_proxy_30d %}
+      <div class="kv-row">
+        <span class="kv-label">Curve Proxy (30d)</span>
+        <span class="kv-value">{{ curve_proxy_30d }} €</span>
+      </div>
+      {% endif %}
+      {% if signal_month_base %}
+      <div class="kv-row">
+        <span class="kv-label">Signal Premium</span>
+        <span class="kv-value {% if signal_month_base[0] == '+' %}v-up{% elif signal_month_base[0] == '-' %}v-down{% endif %}">{{ signal_month_base }} €</span>
+      </div>
+      {% endif %}
+      {% if spark_spread_actual %}
+      <div class="kv-row">
+        <span class="kv-label">Spark Spread</span>
+        <span class="kv-value">{{ spark_spread_actual }} €</span>
+      </div>
+      {% endif %}
+      {% if curve_7d or curve_90d %}
+      <div class="kv-row">
+        <span class="kv-label">Curve Proxies</span>
+        <span class="kv-value kv-trail">{% if curve_7d %}7d: {{ curve_7d }}{% endif %}{% if curve_7d and curve_90d %} | {% endif %}{% if curve_90d %}90d: {{ curve_90d }}{% endif %}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Tomorrow's Price -->
+    <div class="card">
+      <div class="card-title">Tomorrow's Price</div>
+      {% if base_pred %}
+      <div class="kv-row">
+        <span class="kv-label">Base Forecast</span>
+        <span class="kv-value">{{ base_pred }} €/MWh</span>
+      </div>
+      {% endif %}
+      {% if peak_pred %}
+      <div class="kv-row">
+        <span class="kv-label">Peak Forecast</span>
+        <span class="kv-value">{{ peak_pred }} €/MWh</span>
+      </div>
+      {% endif %}
+      {% if offpeak_pred %}
+      <div class="kv-row">
+        <span class="kv-label">Offpeak Forecast</span>
+        <span class="kv-value">{{ offpeak_pred }} €/MWh</span>
+      </div>
+      {% endif %}
+      {% if peak_premium %}
+      <div class="kv-row">
+        <span class="kv-label">Peak Premium</span>
+        <span class="kv-value">{{ peak_premium }} €</span>
+      </div>
+      {% endif %}
+      {% if p10 and p90 %}
+      <div class="kv-row">
+        <span class="kv-label">P10–P90 Range</span>
+        <span class="kv-value kv-trail">{{ p10 }} – {{ p90 }} €/MWh</span>
+      </div>
+      {% endif %}
+      {% if base_actual %}
+      <div class="kv-row">
+        <span class="kv-label">Actual (settled)</span>
+        <span class="kv-value">{{ base_actual }} €/MWh <span class="kv-trail {% if forecast_error and forecast_error[0] == '+' %}v-down{% elif forecast_error and forecast_error[0] == '-' %}v-up{% endif %}">(err: {{ forecast_error }})</span></span>
+      </div>
+      {% endif %}
+      {% if trail_base %}
+      <div class="kv-row">
+        <span class="kv-label">7d Avg Base</span>
+        <span class="kv-value kv-trail">{{ trail_base }} €</span>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Row 2: Market Context + Regime & Shape -->
+  <div class="grid-2">
+
+    <!-- Market Context -->
+    <div class="card">
+      <div class="card-title">Market Context</div>
+      {% if avg_wind_mw %}
+      <div class="kv-row">
+        <span class="kv-label">Wind</span>
+        <span class="kv-value">{{ avg_wind_mw }} MW {% if trail_wind %}<span class="kv-trail">(7d: {{ trail_wind }})</span>{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if avg_solar_mw %}
+      <div class="kv-row">
+        <span class="kv-label">Solar</span>
+        <span class="kv-value">{{ avg_solar_mw }} MW</span>
+      </div>
+      {% endif %}
+      {% if avg_residual_load_mw %}
+      <div class="kv-row">
+        <span class="kv-label">Residual Load</span>
+        <span class="kv-value">{{ avg_residual_load_mw }} MW {% if trail_res_load %}<span class="kv-trail">(7d: {{ trail_res_load }})</span>{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if gas_price %}
+      <div class="kv-row">
+        <span class="kv-label">Gas (TTF)</span>
+        <span class="kv-value">{{ gas_price }} €/MWh {% if trail_gas %}<span class="kv-trail">(7d: {{ trail_gas }})</span>{% endif %}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Regime & Intraday Shape -->
+    <div class="card">
+      <div class="card-title">Regime & Intraday Shape</div>
+      {% if regime_label %}
+      <div class="kv-row">
+        <span class="kv-label">Market Regime</span>
+        <span class="kv-value"><span class="regime-tag {% if regime_label == 'Thermal' %}regime-thermal{% else %}regime-res{% endif %}">{{ regime_label }}</span></span>
+      </div>
+      {% endif %}
+      {% if res_pct %}
+      <div class="kv-row">
+        <span class="kv-label">RES Penetration</span>
+        <span class="kv-value">{{ res_pct }}</span>
+      </div>
+      {% endif %}
+      {% if intraday_spread %}
+      <div class="kv-row">
+        <span class="kv-label">Intraday Spread</span>
+        <span class="kv-value">{{ intraday_spread }} €/MWh</span>
+      </div>
+      {% endif %}
+      {% if neg_hours is not none %}
+      <div class="kv-row">
+        <span class="kv-label">Neg. Price Hours</span>
+        <span class="kv-value {% if neg_hours > 0 %}v-warn{% else %}v-muted{% endif %}">{{ neg_hours }}h</span>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <!-- Invalidation bar -->
+  <div class="inv-bar {% if any_invalidation %}inv-warn-bar{% else %}inv-clean-bar{% endif %}">
+    {% if any_invalidation %}
+      ⚠ {{ inv_active }} INVALIDATION FLAG{{ 'S' if inv_active > 1 else '' }} ACTIVE — review before trading
+    {% else %}
+      ✓ ALL CHECKS PASSED — signal reliable
+    {% endif %}
+  </div>
+  {% if any_invalidation %}
+  <div class="inv-flags" style="margin-bottom: 8px;">
+    {% for name, fired in inv_flags %}
+      <span class="inv-chip {% if fired %}chip-bad{% else %}chip-ok{% endif %}">
+        {% if fired %}✗{% else %}✓{% endif %} {{ name }}
+      </span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Model Credibility (compact boxes) -->
+  {% if model_mae or model_dir_acc or backtest_sharpe or backtest_hit_rate %}
+  <div class="cred-row">
+    {% if model_mae %}
+    <div class="cred-box">
+      <div class="cred-val">{{ model_mae }}</div>
+      <div class="cred-lbl">Model MAE (€/MWh)</div>
+    </div>
+    {% endif %}
+    {% if model_dir_acc %}
+    <div class="cred-box">
+      <div class="cred-val">{{ model_dir_acc }}</div>
+      <div class="cred-lbl">Directional Acc.</div>
+    </div>
+    {% endif %}
+    {% if backtest_sharpe %}
+    <div class="cred-box">
+      <div class="cred-val">{{ backtest_sharpe }}</div>
+      <div class="cred-lbl">Backtest Sharpe</div>
+    </div>
+    {% endif %}
+    {% if backtest_hit_rate %}
+    <div class="cred-box">
+      <div class="cred-val">{{ backtest_hit_rate }}</div>
+      <div class="cred-lbl">Signal Hit Rate</div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- AI Intelligence Briefing — full text with grounding citations -->
+  {% if ai_signal or ai_fundamentals or ai_shape %}
+  <div class="card-title" style="margin-bottom: 4px;">AI Intelligence</div>
+
+  {% if ai_signal %}
+  <div class="ai-card">
+    <div class="ai-label">Signal</div>
+    <div class="ai-text">{{ ai_signal }}</div>
+  </div>
+  {% endif %}
+
+  {% if ai_fundamentals %}
+  <div class="ai-card">
+    <div class="ai-label">Fundamentals</div>
+    <div class="ai-text">{{ ai_fundamentals }}</div>
+  </div>
+  {% endif %}
+
+  {% if ai_shape %}
+  <div class="ai-card">
+    <div class="ai-label">Intraday Shape</div>
+    <div class="ai-text">{{ ai_shape }}</div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  <div class="page-footer">
+    DE_LU Power Intelligence | Cobblestone Energy Pipeline | {{ generated_time }}
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 2 — SIGNAL DASHBOARD
+     ═══════════════════════════════════════════════════════ -->
+<div class="page fig-page">
+  <div class="fig-title">Trading Signal Dashboard</div>
+  {% if fig1_path %}
+  <img src="file://{{ fig1_path }}" alt="Signal Dashboard">
+  {% else %}
+  <p style="color: #6b7280;">Signal dashboard not available.</p>
+  {% endif %}
+  <div class="fig-caption">
+    Fair value vs curve proxy &nbsp;|&nbsp; Daily signal premium &nbsp;|&nbsp; Today's scorecard
+  </div>
+  <div class="page-footer">
+    DE_LU Power Intelligence | Cobblestone Energy Pipeline | {{ generated_time }}
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 3 — HOURLY FORECAST
+     ═══════════════════════════════════════════════════════ -->
+<div class="page fig-page">
+  <div class="fig-title">Tomorrow's Hourly Forecast</div>
+  {% if fig2_path %}
+  <img src="file://{{ fig2_path }}" alt="Hourly Forecast">
+  {% else %}
+  <p style="color: #6b7280;">Forecast not available.</p>
+  {% endif %}
+  <div class="fig-caption">
+    Hourly price profile with base/peak blocks &nbsp;|&nbsp; Shape vs seasonal average
+  </div>
+  <div class="page-footer">
+    DE_LU Power Intelligence | Cobblestone Energy Pipeline | {{ generated_time }}
+  </div>
+</div>
+
+</body>
+</html>

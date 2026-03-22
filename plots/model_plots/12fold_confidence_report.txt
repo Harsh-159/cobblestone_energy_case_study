@@ -1,0 +1,62 @@
+======================================================================
+ 12-FOLD WALK-FORWARD MODEL CONFIDENCE REPORT
+ Generated: 2026-03-20 14:49:05 UTC
+ Folds: 12 | Test window: 30 days each
+======================================================================
+
+PER-FOLD MAE (EUR/MWh)
+----------------------------------------------------------------------
+  Fold      seasonal_naive   linear_regression            lightgbm             xgboost  lgbm_ridge_ensemble
+----------------------------------------------------------------------
+     0             65.79               23.56               30.46               30.29               23.53 *
+     1            126.92               44.29               31.23 *             32.97               31.65  
+     2             89.75               40.04               31.67               33.53               31.65 *
+     3             44.53               20.27 *             33.60               34.77               26.41  
+     4             56.27               24.27 *             29.21               30.06               27.27  
+     5             58.78               53.13               42.14 *             44.61               43.81  
+     6             75.24               61.67               60.40               68.03               58.95 *
+     7            135.96               78.42 *             88.38               92.07               84.37  
+     8            126.89               90.94               50.17 *             51.11               59.30  
+     9             63.60               59.57               63.33               57.66 *             65.92  
+    10             75.17               42.17               26.54 *             26.87               28.94  
+    11            115.65               39.63               32.69               32.41               31.18 *
+
+(* = best model for that fold)
+
+SUMMARY STATISTICS
+----------------------------------------------------------------------
+Model                         Mean      Std   Median      Min      Max    CV%
+----------------------------------------------------------------------
+lgbm_ridge_ensemble          42.75    19.66    31.65    23.53    84.37  46.0%
+lightgbm                     43.32    18.85    33.14    26.54    88.38  43.5%
+xgboost                      44.53    19.65    34.15    26.87    92.07  44.1%
+linear_regression            48.16    21.80    43.23    20.27    90.94  45.3%
+seasonal_naive               86.21    31.94    75.21    44.53   135.96  37.0%
+
+PAIRWISE STATISTICAL TESTS (Wilcoxon signed-rank, alpha=0.05)
+----------------------------------------------------------------------
+Model A              vs Model B              Winner                  p-value  Significant
+----------------------------------------------------------------------
+seasonal_naive       vs linear_regression    linear_regression        0.0005 YES (p=0.0005)
+seasonal_naive       vs lightgbm             lightgbm                 0.0005 YES (p=0.0005)
+seasonal_naive       vs xgboost              xgboost                  0.0005 YES (p=0.0005)
+seasonal_naive       vs lgbm_ridge_ensemble  lgbm_ridge_ensemble      0.0010 YES (p=0.0010)
+linear_regression    vs lightgbm             lightgbm                 0.3394 NO (p=0.3394)
+linear_regression    vs xgboost              xgboost                  0.4697 NO (p=0.4697)
+linear_regression    vs lgbm_ridge_ensemble  lgbm_ridge_ensemble      0.1099 NO (p=0.1099)
+lightgbm             vs xgboost              lightgbm                 0.0522 NO (p=0.0522)
+lightgbm             vs lgbm_ridge_ensemble  lgbm_ridge_ensemble      0.7334 NO (p=0.7334)
+xgboost              vs lgbm_ridge_ensemble  lgbm_ridge_ensemble      0.2661 NO (p=0.2661)
+
+HEAD-TO-HEAD WIN COUNTS (row beat column in N folds)
+----------------------------------------------------------------------
+                      seasonal_nai  linear_regre      lightgbm       xgboost  lgbm_ridge_e
+seasonal_naive                 ---             0             0             0             1
+linear_regression               12           ---             5             5             4
+lightgbm                        12             7           ---             9             5
+xgboost                         12             7             3           ---             3
+lgbm_ridge_ensemble             11             8             7             9           ---
+
+BEST MODEL: lgbm_ridge_ensemble (mean MAE = 42.75 EUR/MWh)
+  -> NOT statistically significantly better than lightgbm (p=0.7334) — difference may be due to chance
+======================================================================

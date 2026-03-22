@@ -1,0 +1,21 @@
+====================================================
+DE_LU ANOMALY INVESTIGATION — 2026-03-14
+====================================================
+
+FLAGS TRIGGERED
+The 'inv_wind_revision' flag was triggered, indicating a significant change in wind forecast data which is crucial for balancing the energy market and can invalidate trading signals. Active flags: inv_wind_revision [signal_table.csv → 2026-03-14, inv_wind_revision = True].
+
+LIKELY CAUSE
+The trading signal was invalidated due to a substantial downward revision in the wind forecast. This suggests that the expected wind generation today is much lower than previously anticipated. The gas price saw a slight decrease, which does not appear to be the primary driver for the invalidated signal. The DA price range and negative price hours from yesterday are not directly linked to the wind revision. Wind shifted by -24347.0 MW [de_power_dataset.parquet → 2026-03-13 to 2026-03-14, wind_revision_mw = -24347.0].
+
+DATA ERROR OR MARKET EVENT?
+This appears to be a genuine market event. A large revision in a key variable like wind generation forecast is a plausible reason for a trading signal to become unreliable, as it fundamentally alters the expected supply/demand balance. It is not indicative of a data quality issue with the signal itself, but rather a change in the underlying market conditions. Signal premium was 18.0 EUR/MWh [signal_table.csv → 2026-03-14, signal_month_base = 18.0].
+
+DESK RECOMMENDATION
+INVESTIGATE FURTHER
+
+────────────────────────────────────────────────────
+EVIDENCE VERIFIED: 3/3 citations confirmed
+This report was generated automatically from pipeline data.
+Manual verification recommended before acting on CONSIDER OVERRIDE recommendation.
+====================================================

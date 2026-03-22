@@ -1,0 +1,25 @@
+====================================================
+DE_LU POWER INTELLIGENCE BRIEFING — 2026-03-14
+====================================================
+
+SIGNAL SUMMARY
+The prevailing signal has been invalidated, suggesting a loss of predictive power for the upcoming period.  Given the mixed recent history and current market ambiguity, a cautious 'hold' or even 'avoid' approach is warranted. The M+1 base signal is INVALIDATED [signal_table.csv → 2026-03-14, signal_label_month_base = INVALIDATED] with a premium of 18.0 EUR/MWh over the curve proxy [signal_table.csv → 2026-03-14, signal_month_base = 18.0]. Model confidence is 0.646 [signal_table.csv → 2026-03-14, month_confidence = 0.646], giving a position size of 0.0 [signal_table.csv → 2026-03-14, month_position_size = 0.0].
+
+FUNDAMENTAL DRIVERS
+Current conditions show significantly elevated residual load compared to recent averages.  However, gas prices have eased, and wind generation is notably subdued, creating a mixed fundamental picture that is not clearly bullish or bearish. Residual load is 37741.0 MW [delivery_periods.csv → 2026-03-14, avg_residual_load_mw = 37741.0] vs 7-day average of 29488.0 MW [delivery_periods.csv → trailing_7d, mean_residual_load_7d = 29488.0]. Wind generation is 7826.0 MW [delivery_periods.csv → 2026-03-14, avg_wind_mw = 7826.0] vs 7-day average of 15742.0 MW [delivery_periods.csv → trailing_7d, mean_wind_mw_7d = 15742.0]. Gas price is 50.12 EUR/MWh [delivery_periods.csv → 2026-03-14, gas_price = 50.12] vs 7-day average of 52.12 EUR/MWh [delivery_periods.csv → trailing_7d, mean_gas_price_7d = 52.12]. The market is in thermal regime [signal_table.csv → 2026-03-14, is_thermal_regime = True].
+
+TOP MODEL FEATURES
+The model's top drivers highlight the significant impact of residual load, alongside the influence of recent and longer-term price lags. This suggests that past price behavior and current demand patterns are key to understanding future movements. The top 3 features are residual_load_mw [model_performance_report.txt → OOS_summary, top_feature_rank1 = residual_load_mw], gas_price_lag_24h [model_performance_report.txt → OOS_summary, top_feature_rank2 = gas_price_lag_24h], and price_lag_168h [model_performance_report.txt → OOS_summary, top_feature_rank3 = price_lag_168h]. Model OOS MAE is 13.6 EUR/MWh [model_performance_report.txt → OOS_summary, lightgbm_oos_mae = 13.6].
+
+INTRADAY SHAPE
+Intraday price action is expected to peak during the afternoon hours, driven by elevated demand during this period.  Conversely, prices are anticipated to be at their lowest outside of these peak demand times. Peak-base premium is 0.88 EUR/MWh [signal_table.csv → 2026-03-14, peak_base_premium_pred = 0.88]. Prices are lowest at hour 12 [delivery_periods.csv → 2026-03-14, min_hour_pred = 12] and highest at hour 17 [delivery_periods.csv → 2026-03-14, max_hour_pred = 17]. Intraday spread is 88.78 EUR/MWh [delivery_periods.csv → 2026-03-14, intraday_spread_pred = 88.78].
+
+INVALIDATION STATUS
+The signal's invalidation appears to be primarily driven by weaker wind generation than expected.  As a result, the model's confidence is reduced, and the trading desk should exercise caution and avoid taking a strong directional stance. Invalidation is ACTIVE — triggered by: wind revision [signal_table.csv → 2026-03-14, any_invalidation = True]. Position size overridden to 0.0 [signal_table.csv → 2026-03-14, month_position_size = 0.0].
+
+────────────────────────────────────────────────────
+CITATION VALIDATION
+21/21 claims verified against pipeline data.
+Status: CLEAN
+Full audit: outputs/ai_intelligence/2026-03-14/citation_validation.json
+====================================================

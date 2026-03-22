@@ -1,0 +1,84 @@
+============================================================
+ DE_LU Power — Prompt Curve Translation Report
+ Generated: 2026-03-22 21:17:53 UTC
+ OOS Signal Period: 2024-11-01 to 2026-03-15
+ CV Mean MAE used: 13.60 EUR/MWh
+============================================================
+
+METHODOLOGY
+------------------------------------------------------------
+Signal construction:
+  - Hourly DA forecasts → daily base/peak delivery-period averages
+  - 7/30/90-day forward aggregations → prompt week/month/quarter fair value
+  - Curve proxy: trailing rolling DA average (7d/30d/90d window)
+  - Signal premium: fair value minus curve proxy (€/MWh)
+  - Thresholds: BUY ≥ +3.0, STRONG_BUY ≥ +8.0, SELL ≤ -3.0, STRONG_SELL ≤ -8.0
+
+SIGNAL SUMMARY (OOS period)
+------------------------------------------------------------
+  Total dates with signal:      500
+  STRONG_BUY days:              111 (22.2%)
+  BUY days:                     28 (5.6%)
+  HOLD days:                    37 (7.4%)
+  SELL days:                    42 (8.4%)
+  STRONG_SELL days:             154 (30.8%)
+  INVALIDATED days:             118 (23.6%)
+
+  Mean month base signal:       -0.67 €/MWh
+  Std of signal:                16.91 €/MWh
+  Signal vs realisation corr:   0.203  ← key validity metric
+
+BACKTEST SUMMARY (ILLUSTRATION ONLY)
+------------------------------------------------------------
+  Hit rate (directional):       66.5%
+  Mean daily P&L:               1.94 €/MWh per unit
+  Cumulative P&L:               411.0 €/MWh per unit
+  Sharpe proxy (annualised):    1.87
+  WARNING: No costs, no slippage, no risk limits.
+
+INVALIDATION BREAKDOWN
+------------------------------------------------------------
+  Gas spike (>5.0€/MWh or 10%):  7 days (1.4%)
+  Wind change (>15GW + >2σ):  20 days (4.0%)
+  Res. load swing (>15GW + >2σ):  20 days (4.0%)
+  Negative price regime (≥4h): 74 days (14.8%)
+  High model error regime:      10 days (2.0%)
+  Any invalidation:             118 days (23.6%)
+
+SPARK SPREAD REGIME
+------------------------------------------------------------
+  Thermal regime days (spark > 5 €/MWh):     485 (97.0%)
+  RES regime days (spark < -5 €/MWh):        6 (1.2%)
+  Signal hit rate in thermal regime:          67.6%
+  Signal hit rate in RES regime:              0.0%
+
+WHAT THE DESK WOULD DO WITH THIS
+------------------------------------------------------------
+  BUY signal (M+1 base):
+    → Go long EEX German Power Base Month+1 futures
+    → Size: full (confidence ≥ 0.75) or half (0.50–0.75)
+    → Entry: compare fair value to live EEX quote at 12:00 CET
+    → Stop: signal inverted OR any invalidation flag triggers
+
+  SELL signal (M+1 base):
+    → Go short EEX German Power Base Month+1 futures
+    → Same sizing logic
+    → Stop: same
+
+  PEAK PREMIUM signal (if fv_month_peak - fv_month_base > historical avg):
+    → Long Peak / Short Base spread (EEX base + peakload futures)
+    → Expresses shape view without outright directional exposure
+
+  QUARTER SIGNAL (if fv_quarter_base signal strong):
+    → Q+1 baseload futures — less reactive, longer-horizon view
+
+WHAT WOULD INVALIDATE THE SIGNAL
+------------------------------------------------------------
+  1. Gas price move >10% intraday (TTF reprices entire curve)
+  2. Wind change >15GW AND >2σ of trailing 30d (dual-gate)
+  3. Residual load swing >15GW AND >2σ of trailing 30d (dual-gate)
+  4. Model predicting 4+ negative-price hours (RES oversupply regime)
+  5. Model rolling MAE > 2× CV average (27.2 €/MWh threshold)
+  6. Major geopolitical event affecting gas supply (manual override)
+
+============================================================

@@ -1,0 +1,59 @@
+======================================================================
+ AutoGluon Training & Comprehensive Performance Report
+ Generated: 2026-03-20 21:09:17 UTC
+======================================================================
+
+AUTOGLUON MODEL LEADERBOARD
+----------------------------------------------------------------------
+Rank  Model                                   Val Score   Fit Time(s)  Pred Time(s)
+----------------------------------------------------------------------
+   1  WeightedEnsemble_L3                       -6.6886         294.7        1.3916 <-- BEST
+   2  WeightedEnsemble_L2                       -6.7996         220.2        1.1709
+   3  LightGBMXT_BAG_L1                         -6.8742         191.1        0.5649
+   4  LightGBMXT_BAG_L2                         -6.9040         294.6        1.3912
+   5  RandomForestMSE_BAG_L1                    -8.5930          29.1        0.6056
+   6  LightGBM_BAG_L1                          -11.7609           7.4        0.0271
+
+Total models evaluated: 6
+Best model: WeightedEnsemble_L3
+
+OOS PERFORMANCE COMPARISON (Hourly)
+----------------------------------------------------------------------
+Model                                MAE      RMSE    P95_AE   Dir.Acc     Skill
+----------------------------------------------------------------------
+lgbm_ridge_ensemble                 15.6      34.0      40.3     84.5%     +0.58
+autogluon                           16.2      33.7      41.2     82.8%     +0.56
+seasonal_naive                      36.8      65.3      94.6       N/A     +0.00
+
+MULTI-GRANULARITY FORECAST ACCURACY
+----------------------------------------------------------------------
+
+  HOURLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble              15.60     34.03   1680.2%     +2.69   5134
+  naive                            36.76     65.28   4737.6%     +0.51   5134
+  ensemble                         15.60     34.03   1680.2%     +2.69   5134
+  autogluon                        16.22     33.72   1471.8%     -1.74   5134
+
+  WEEKLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble               9.20     14.02     10.6%     +2.03     32
+  naive                            20.66     31.37     27.1%     -0.28     32
+  ensemble                          9.20     14.02     10.6%     +2.03     32
+  autogluon                        10.78     14.88     13.5%     -2.32     32
+
+  MONTHLY ACCURACY:
+  Model                              MAE      RMSE      MAPE       MBE      N
+  -----------------------------------------------------------------
+  lgbm_ridge_ensemble               7.52      9.92      8.2%     +2.69      7
+  naive                             5.12      6.79      5.9%     +0.43      7
+  ensemble                          7.52      9.92      8.2%     +2.69      7
+  autogluon                         9.58     10.88     11.2%     -1.74      7
+
+  Note: Weekly = ISO week averages, Monthly = calendar month averages
+        Aggregated from hourly forecasts (not separate models)
+        OOS period Jun-Dec 2024 gives ~30 weeks and 7 months
+
+======================================================================
