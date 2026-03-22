@@ -206,7 +206,7 @@ cobblestone_project/
 ```
 
 ---
-
+# Task 1
 ## Output Dataset
 
 The pipeline produces `data/processed/de_power_dataset.parquet` with these columns:
@@ -242,7 +242,7 @@ The pipeline runs 10 automated checks:
 **QA results**: 1,621 rows flagged (1,183 errors, 42 warnings, 396 informational), 591 auto-corrections. See `outputs/qa_report_summary.txt` and `outputs/qa_flagged_rows.csv`.
 
 ---
-
+# Task 2
 ## Model Architecture
 
 The forecasting engine uses a **LGBM+Ridge ensemble** with two-pass training:
@@ -266,8 +266,8 @@ The forecasting engine uses a **LGBM+Ridge ensemble** with two-pass training:
 Reproduce with: `python scripts/run_model_comparison.py`
 
 ---
-
-## Curve Translation (Task 3)
+# Task 3
+## Curve Translation 
 
 Converts hourly forecasts into trading signals for Week+1, Month+1, Quarter+1 delivery periods:
 
@@ -276,8 +276,8 @@ Converts hourly forecasts into trading signals for Week+1, Month+1, Quarter+1 de
 - **5 invalidation flags**: gas spike, wind revision, residual load swing, negative prices, high recent error
 
 ---
-
-## AI Intelligence (Task 4)
+# Task 4
+## AI Intelligence 
 
 RAG-based market briefings using Google Gemini (`gemini-2.0-flash`):
 
@@ -290,7 +290,7 @@ Requires `GEMINI_API_KEY` in `.env`.
 
 ---
 
-## Daily Reporting (Task 5)
+## Daily Reporting (Additional feature)
 
 Automated daily report generation with web dashboard:
 
