@@ -302,6 +302,7 @@ Automated daily report generation with web dashboard:
 
 Run with: `python scripts/start_server.py`
 
+For sending email it requires `SENDER_EMAIL` and `SENDER_APP_PASSWORD` in `.env`, this can be obtained from https://myaccount.google.com/apppasswords
 ---
 
 ## Reproducibility
